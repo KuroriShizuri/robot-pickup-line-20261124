@@ -17,6 +17,7 @@ back and exits non-zero unless the bytes on disk match exactly.
 
 import os
 import sys
+import tempfile
 
 ENTRY = "You must be a kernel panic \u2014 one look at you and my whole system stopped."
 
@@ -63,10 +64,24 @@ def write_and_verify(path, text):
 
 
 def self_test():
-    """Validate the entry and report its size; no file is written."""
+    """Validate the entry and check a byte-identical write/read round-trip.
+
+    Validation alone never exercises the write path, so the self-test
+    also writes the entry to a temporary directory and reads it back:
+    a write-mode or encoding surprise fails here instead of reaching
+    the judge. No file is written outside the temporary directory.
+    """
     check_entry(ENTRY)
     n_bytes = len(ENTRY.encode("utf-8"))
-    print("self-test OK: %d characters, %d bytes" % (len(ENTRY), n_bytes))
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, OUTPUT_FILENAME)
+        written = write_and_verify(path, ENTRY)
+        if written != n_bytes:
+            raise SystemExit(
+                "self-test FAIL: wrote %d bytes, expected %d" % (written, n_bytes)
+            )
+    print("self-test OK: %d characters, %d bytes, byte-identical round-trip"
+          % (len(ENTRY), n_bytes))
     return 0
 
 
