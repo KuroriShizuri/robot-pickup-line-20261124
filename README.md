@@ -12,7 +12,7 @@ An entry for [The Robot Pickup Line Championship](https://make.fun/bounty/u-joll
 
 **73 characters** (75 bytes UTF-8).
 
-The joke grows out of a machine fact: a kernel panic halts the whole system. No human template with jargon pasted on — the machine fact does the work.
+The joke grows out of a machine fact: a kernel panic halts the whole system. One look, total system halt — the machine fact does the work, not a human line with tech jargon pasted on.
 
 ## Run it
 
